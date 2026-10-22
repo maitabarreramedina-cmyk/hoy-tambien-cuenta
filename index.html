@@ -89,6 +89,12 @@ input,textarea{font-family:inherit;color:inherit}
 .book.two::after{content:"";position:absolute;z-index:9;left:50%;top:30px;bottom:30px;width:70px;transform:translateX(-50%);pointer-events:none;
    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='72'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23FBEDE6'/%3E%3Cstop offset='.45' stop-color='%23DDAE9A'/%3E%3Cstop offset='1' stop-color='%23A8735F'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='13' cy='36' r='5.5' fill='%23CBB8B4' opacity='.55'/%3E%3Ccircle cx='57' cy='36' r='5.5' fill='%23CBB8B4' opacity='.55'/%3E%3Crect x='8' y='30' width='54' height='12' rx='6' fill='url(%23g)'/%3E%3Crect x='12' y='32' width='46' height='2.6' rx='1.3' fill='%23fff' opacity='.7'/%3E%3C/svg%3E") repeat-y 0 0/70px 72px}
 /* pestañas de meses */
+/* ---------- modo móvil: hoja a todo el ancho ---------- */
+body.mob .zoomer{padding:2px 0 16px}
+body.mob .page:not(.opener){width:var(--mw);height:auto;min-height:var(--mh);border-radius:16px}
+body.mob .page:not(.opener) .page-in{position:relative;inset:auto;padding:22px 18px 46px 20px;overflow:visible}
+body.mob .page:not(.opener)::before{display:none}
+body.mob .page:not(.opener) .sheetno{bottom:14px}
 .mtabs{display:flex;flex-direction:column;gap:5px;position:absolute;right:4px;top:44px;z-index:1}
 .mtabs button{border:0;width:46px;padding:8px 0 8px 10px;border-radius:0 10px 10px 0;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--b-ink);
   background:var(--b-tint);box-shadow:2px 2px 6px rgba(74,58,64,.10);text-align:center;transition:transform .15s}
@@ -617,14 +623,19 @@ function render(){
 function applyZoom(){
   const z=$("#zoomer"),st=$("#stage");if(!z)return;
   z.style.transform="";z.classList.remove("left");st.style.height="";st.style.overflowX="";
-  const s0=DB.settings;document.body.classList.toggle("fitmode",s0.view==="fit");
-  const w=z.offsetWidth,h=z.offsetHeight,avW=st.clientWidth-8,sw=swe2(),avH=innerHeight-$(".top").offsetHeight-$("#pnav").offsetHeight-44-sw;
-  let s=s0.view==="fit"?Math.min(avW/w,avH/h):(avW/w)*(s0.zoom||1);
+  const s0=DB.settings,avW0=st.clientWidth-8,sw0=swe2(),avH0=innerHeight-$(".top").offsetHeight-$("#pnav").offsetHeight-44-sw0;
+  const mob=isMob()&&!!z.querySelector(".book.single .page:not(.opener)");
+  document.body.classList.toggle("mob",mob);document.body.classList.toggle("fitmode",!mob&&s0.view==="fit");
+  let ms=0;if(mob){ms=MOBS[s0.mobsize||"m"];document.documentElement.style.setProperty("--mw",Math.floor(avW0/ms)+"px");document.documentElement.style.setProperty("--mh",Math.floor(avH0/ms)+"px");}
+  const w=z.offsetWidth,h=z.offsetHeight,avW=avW0,sw=sw0,avH=avH0;
+  let s=mob?ms:s0.view==="fit"?Math.min(avW/w,avH/h):(avW/w)*(s0.zoom||1);
   if(w*s<=avW+9)z.style.transform=`translateX(-50%) scale(${s})`;
   else{z.classList.add("left");z.style.transform=`scale(${s})`;st.style.overflowX="auto";}
   st.style.height=Math.ceil(h*s+sw)+"px";ZS=s;
 }
 let ZS=1,zT=null;
+const MOBS={s:.78,m:.88,l:1};
+function isMob(){return innerWidth<700&&DB.settings.mobile!==false;}
 function swe2(){const e=document.querySelector(".sheetsw");return e?e.offsetHeight+12:0;}
 window.addEventListener("resize",()=>{clearTimeout(zT);zT=setTimeout(()=>{if(effSingle()!==(document.querySelector(".sheetsw")!=null)&&lastPages>1)render();else{applyZoom();placeTools();}},120);});
 function fit(t){}
@@ -733,7 +744,11 @@ function fontPanel(){
 $("#bFont").onclick=fontPanel;
 function viewPanel(){
   const s=DB.settings;
-  openSheet("Vista",`<div class="lbl">Cómo ver las hojas</div>
+  const mobOpt=innerWidth<700?`<div class="lbl">Modo móvil</div>
+  <div class="row"><button class="chip ${s.mobile!==false?"on":""}" data-mobile="1">Pantalla completa</button><button class="chip ${s.mobile===false?"on":""}" data-mobile="0">Hoja carta</button></div>
+  ${s.mobile!==false?`<div class="lbl">Tamaño de la letra</div><div class="row">${[["s","Pequeña"],["m","Mediana"],["l","Grande"]].map(([k,n])=>`<button class="chip ${(s.mobsize||"m")===k?"on":""}" data-mobsize="${k}">${n}</button>`).join("")}</div>`:""}
+  <div class="hint">«Pantalla completa» usa todo el ancho del móvil y bajas con el dedo. «Hoja carta» muestra la hoja como en el ordenador.</div>`:"";
+  openSheet("Vista",`${mobOpt}<div class="lbl">Cómo ver las hojas</div>
   <div class="row"><button class="chip ${s.view==="fit"?"on":""}" data-view="fit">Hoja completa</button><button class="chip ${s.view==="width"?"on":""}" data-view="width">Ajustar al ancho</button></div>
   <div class="hint">«Hoja completa» muestra la hoja entera en la pantalla, sin bajar. Para escribir con comodidad, usa «Ajustar al ancho» y cambia el tamaño.</div>
   <div class="lbl">Hojas a la vez</div>
@@ -768,6 +783,8 @@ $("#sheetB").addEventListener("click",e=>{
   if(b.dataset.color){s.color=b.dataset.color;save();applySettings();setPanel();return;}
   if(b.dataset.wash){s.wash=b.dataset.wash;save();applySettings();setPanel();return;}
   if(b.dataset.view){s.view=b.dataset.view;save();render();viewPanel();return;}
+  if(b.dataset.mobile){s.mobile=b.dataset.mobile==="1";save();render();viewPanel();return;}
+  if(b.dataset.mobsize){s.mobsize=b.dataset.mobsize;save();render();viewPanel();return;}
   if(b.dataset.single){s.single=b.dataset.single==="1";save();render();viewPanel();return;}
   if(b.dataset.zoom){const z=b.dataset.zoom;s.zoom=z==="1"?1:Math.round(Math.min(1.6,Math.max(.5,(s.zoom||1)+(z==="+"?.1:-.1)))*10)/10;save();applyZoom();drawStickers();viewPanel();return;}
   if(b.dataset.stk){const [t,c]=b.dataset.stk.split("|");addSticker(t,t==="e"||t==="k"?c:+c);return;}
