@@ -119,6 +119,9 @@ body.mob .page.opener::before{display:none}
 body.mob .coverwrap{width:var(--mw)}
 body.mob .cbook{width:calc(var(--mw) - 34px);height:calc(var(--mh) - 72px);margin-left:30px}
 body.mob .cbook.back{margin-left:4px}
+body.mob .op-month{font-size:min(104px,calc((var(--mw) - 84px) * 1.42 / var(--len)))!important;white-space:nowrap}
+body.mob .cbook .c-art img{position:absolute;inset:0;margin:auto;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}
+body.mob .cbook .c-art .halo{width:min(330px,80%)}
 .mtabs{display:flex;flex-direction:column;gap:5px;position:absolute;right:4px;top:44px;z-index:1}
 .mtabs button{border:0;width:46px;padding:8px 0 8px 10px;border-radius:0 10px 10px 0;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--b-ink);
   background:var(--b-tint);box-shadow:2px 2px 6px rgba(74,58,64,.10);text-align:center;transition:transform .15s}
@@ -561,7 +564,7 @@ function vVision(){
 }
 function vOpen(m){
   return {title:MONTHS[m],single:true,pages:[page("open-"+m,`<span class="op-year">${YEAR}</span>
-    <div><div class="op-month" style="font-size:${Math.min(104,Math.floor(900/MONTHS[m].length))}px">${MONTHS[m]}</div><div class="op-theme">${esc(theme(m))}</div><div class="op-phrase">${esc(MONTH_PHRASE[m])}</div></div>`,{cls:"opener",clip:`<div class="ov"></div>`,bg:m+"f"})]};
+    <div><div class="op-month" style="--len:${MONTHS[m].length};font-size:${Math.min(104,Math.floor(900/MONTHS[m].length))}px">${MONTHS[m]}</div><div class="op-theme">${esc(theme(m))}</div><div class="op-phrase">${esc(MONTH_PHRASE[m])}</div></div>`,{cls:"opener",clip:`<div class="ov"></div>`,bg:m+"f"})]};
 }
 function vMonth(m){
   const k="m-"+m,first=(new Date(YEAR,m,1).getDay()+6)%7,t=new Date();
@@ -664,7 +667,7 @@ function applyZoom(){
   document.body.classList.toggle("mob",mob);document.body.classList.toggle("fitmode",!mob&&s0.view==="fit");
   if(mob){
     const R=document.documentElement.style,avW=st.clientWidth-16,top=z.getBoundingClientRect().top,mb=$("#mbar").getBoundingClientRect(),avH=Math.floor(mb.top-top-10);
-    let s=MOBS[s0.mobsize||"m"];
+    const fixed=z.querySelector(".coverwrap, .page.opener");let s=fixed?Math.min(1,avW/470):MOBS[s0.mobsize||"m"];
     for(let k=0;k<16;k++){R.setProperty("--mw",Math.floor(avW/s)+"px");R.setProperty("--mh",Math.floor(avH/s)+"px");if(z.offsetHeight*s<=avH+1||s<=.56)break;s=Math.max(.56,s-.03);}
     z.style.transform=`translateX(-50%) scale(${s})`;st.style.height=avH+"px";ZS=s;return;}
   const avW0=st.clientWidth-8,sw0=swe2(),avH0=innerHeight-$(".top").offsetHeight-$("#pnav").offsetHeight-44-sw0;
