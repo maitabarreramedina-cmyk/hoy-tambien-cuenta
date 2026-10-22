@@ -94,7 +94,8 @@ input,textarea{font-family:inherit;color:inherit}
 .mbar{display:none}
 body.mobui{height:100dvh;min-height:0;overflow:hidden;padding:0;overscroll-behavior:none;
   background:radial-gradient(120% 55% at 15% 0%,var(--b-tint),transparent 65%),radial-gradient(90% 50% at 100% 100%,var(--b-soft),transparent 70%),linear-gradient(180deg,var(--b-soft),var(--desk))}
-body.mobui .top,body.mobui .pnav,body.mobui .sheetsw,body.mobui .mtabs{display:none!important}
+body.mobui .top,body.mobui .pnav,body.mobui .sheetsw{display:none!important}
+body.mobui:not(.mob) .mtabs{display:none!important}
 body.mobui .stage{margin:0;padding-top:max(10px,env(safe-area-inset-top))}
 body.mobui .cbtn{margin-top:14px}
 body.mobui .mbar{display:flex;position:fixed;z-index:70;left:12px;right:12px;bottom:max(10px,env(safe-area-inset-bottom));height:62px;align-items:center;justify-content:space-between;gap:2px;padding:0 8px;
@@ -108,14 +109,51 @@ body.mobui .mbar{display:flex;position:fixed;z-index:70;left:12px;right:12px;bot
 .mbar .dots{display:flex;gap:5px}.mbar .dots i{width:6px;height:6px;border-radius:50%;background:var(--b-tint)}.mbar .dots i.on{background:var(--b-deep)}
 body.mobui .toast{bottom:calc(90px + env(safe-area-inset-bottom))}
 body.pinching .stk-layer,body.pinching .page{touch-action:none}
+
+/* índice y cómo usar */
+.ix-t{font-family:'Playfair Display';font-weight:400;font-size:54px;line-height:1.05;margin:10px 0 4px;color:var(--b-ink)}
+.ix-sub{color:var(--muted);font-size:15px;margin-bottom:18px}
+.ix-list{display:flex;flex-direction:column;gap:9px}
+.ix-list button{display:flex;justify-content:space-between;align-items:center;gap:10px;border:0;border-radius:14px;background:var(--b-soft);padding:14px 18px;text-align:left}
+.ix-list b{font-family:'Playfair Display';font-weight:400;font-size:21px;color:var(--b-ink)}
+.ix-list span{font-size:12.5px;color:var(--muted);text-align:right}
+.ix-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.ix-grid button{position:relative;border:0;padding:0;aspect-ratio:1/.95;border-radius:14px;overflow:hidden;background:var(--b-tint)}
+.ix-grid .ix-img{position:absolute;inset:0;background-size:cover;background-position:center}
+.ix-grid b{position:absolute;left:0;right:0;bottom:0;padding:18px 8px 7px;text-align:left;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:linear-gradient(transparent,rgba(60,35,45,.65))}
+.how{list-style:none;padding:0;margin:8px 0 0}
+.how li{display:flex;gap:14px;margin-bottom:16px}
+.how li>i{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--b-tint);color:#fff;font-style:normal;font-family:'Playfair Display';font-size:17px}
+.how b{font-size:16px;color:var(--b-ink)}.how p{margin:3px 0 0;font-size:14px;line-height:1.5}
+.how-note{background:var(--b-soft);border-radius:16px;padding:14px 18px;margin-top:10px}.how-note p{margin:4px 0 0;font-size:14px}
+.op-year{background:#fff!important;color:var(--b-ink);backdrop-filter:none!important;text-shadow:none}
+.op-go{display:block;margin:16px 0 0 auto;border:0;background:#fff;color:var(--b-ink);border-radius:999px;padding:9px 18px;font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(60,35,45,.2)}
+/* ---------- app móvil: cuaderno a pantalla completa ---------- */
+body.mob .stage{padding-top:env(safe-area-inset-top)}
+body.mob .page{width:var(--mw)!important;min-height:var(--mh);border-radius:0!important;box-shadow:none!important}
+body.mob .page.opener{height:var(--mh)}
+body.mob .page:not(.opener){height:auto}
+body.mob .page::before{display:block!important;left:-8px;top:18px;bottom:18px;width:42px}
+body.mob .page:not(.opener) .page-in{padding:24px 50px 40px 40px!important}
+body.mob .opener .page-in{padding:24px 56px 28px 40px}
+body.mob .mtabs{display:flex!important;position:absolute;right:0;top:4%;bottom:4%;gap:0;justify-content:space-between;z-index:9}
+body.mob .mtabs button{width:40px;flex:1;max-height:62px;margin:2px 0;padding:0;border-radius:12px 0 0 12px;font-size:10.5px;box-shadow:-2px 2px 6px rgba(74,58,64,.10)}
+body.mob .mtabs button.on,body.mob .mtabs button:hover{transform:translateX(-4px)}
+body.mob .cbook .c-label{margin-bottom:9%}
+body.mob .ix-grid{grid-template-columns:repeat(3,1fr)}
+body.mob .ix-grid button{aspect-ratio:1/.8}
+body.mob .ix-grid b{letter-spacing:.06em;font-size:11px}
+body.mobui .mbar{left:0;right:0;bottom:0;height:calc(64px + env(safe-area-inset-bottom));padding:0 10px env(safe-area-inset-bottom);border-radius:22px 22px 0 0;border:0;
+  background:color-mix(in srgb,var(--b) 45%,var(--b-deep));backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 -6px 20px rgba(74,58,64,.12)}
+body.mobui .mbar button,body.mobui .mbar .mid{color:#fff}
+body.mobui .mbar .arr{background:rgba(255,255,255,.2)}
+body.mobui .mbar .dots i{background:rgba(255,255,255,.4)}body.mobui .mbar .dots i.on{background:#fff}
 /* ---------- modo móvil: hoja a todo el ancho ---------- */
 body.mob .zoomer{padding:0}
 body.mob .page:not(.opener){width:var(--mw);height:auto;min-height:var(--mh);border-radius:18px}
 body.mob .page:not(.opener) .page-in{position:relative;inset:auto;padding:22px 18px 46px 20px;overflow:visible}
-body.mob .page:not(.opener)::before{display:none}
 body.mob .page:not(.opener) .sheetno{bottom:14px}
 body.mob .page.opener{width:var(--mw);height:var(--mh);border-radius:16px}
-body.mob .page.opener::before{display:none}
 body.mob .coverwrap{width:var(--mw)}
 body.mob .cbook{width:calc(var(--mw) - 34px);height:calc(var(--mh) - 72px);margin-left:30px}
 body.mob .cbook.back{margin-left:4px}
@@ -485,7 +523,7 @@ const EMOJI={"Familia":"🤱 👩 👧 👦 👶 🍼 🧸 🎈 🛝 🏠 🛁 �
  "Fechas":"🎂 🎉 🎁 💝 🎄 🎃 🐣 🏖️ 🎓 🥂 🕯️ 🌹 ⭐ 🎊 📅 ⏰ ✈️ 🍰"};
 
 /* ---------- secuencia de hojas ---------- */
-const SEQ=[{v:"cover"},{v:"letter"},{v:"vision"}];
+const SEQ=[{v:"cover"},{v:"index"},{v:"howto"},{v:"letter"},{v:"vision"}];
 for(let m=0;m<12;m++){SEQ.push({v:"open",m});SEQ.push({v:"month",m});for(let d=1;d<=DIM[m];d++){SEQ.push({v:"day",m,d});SEQ.push({v:"notes",m,d});}}
 SEQ.push({v:"closing"});SEQ.push({v:"back"});
 const vk=v=>v.v+"|"+(v.m==null?"":v.m)+"|"+(v.d==null?"":v.d);
@@ -522,7 +560,7 @@ function vCover(){
      <div class="c-art"><div class="halo"></div>${hearts(4)}<img class="sway" src="${COVER_IMG}" alt=""></div>
      <div class="c-label"><label>Esta agenda es de</label><input type="text" data-k="cover" data-f="owner" value="${esc(p.owner||"")}" placeholder="Escribe tu nombre"></div>
    </div><div class="stk-layer" data-pk="cover"></div></section>
-   <div class="cbtn"><button class="pill" data-go='{"v":"letter"}'>Abrir mi agenda →</button></div></div>`,single:true,raw:true};
+   <div class="cbtn"><button class="pill" data-go='{"v":"index"}'>Abrir mi agenda →</button></div></div>`,single:true,raw:true};
 }
 function vLetter(){
   const tv=todayView();
@@ -562,9 +600,27 @@ function vVision(){
      <div class="note n2" style="--r:1deg"><h4>Mi frase para 2027</h4>${lined(k,"motto",3,"La frase que quiero repetirme…")}</div></div>`,{cls:"vbpage",clip:blobs,no:"Hoja 2"});
   return {title:"Tablero de visión",pages:[a,b]};
 }
+function vIndex(){
+  const L=[["howto","Cómo usar tu agenda","Cada cosa, paso a paso"],["letter","Una carta para ti","Empieza aquí"],["vision","Tablero de visión","Tu 2027 en una página"],["closing","Para cerrar el año","Carta final y contraportada"]];
+  return {title:"Índice",single:true,pages:[page("index",`<div class="eyebrow">Hoy También Cuenta · ${YEAR}</div><h1 class="ix-t">Índice</h1><div class="ix-sub">Toca cualquier sección para ir directamente.</div>
+   <div class="ix-list">${L.map(([v,a,b])=>`<button data-go='{"v":"${v}"}'><b>${a}</b><span>${b}</span></button>`).join("")}</div>
+   <div class="sec-t" style="margin:18px 0 10px">Meses</div>
+   <div class="ix-grid">${MONTHS.map((mm,i)=>`<button data-go='{"v":"open","m":${i}}'><span class="ix-img bgm${i}f"></span><b>${mm}</b></button>`).join("")}</div>`,{cls:"ixpage"})]};
+}
+function vHowto(){
+  const S=[["Tu agenda, también como app","En el móvil abre tu enlace en Safari (iPhone) o Chrome (Android) y elige «Añadir a pantalla de inicio». En el ordenador, abre el archivo HTML con doble clic."],
+   ["Navega con un toque","Las pestañas de la derecha te llevan a cada mes y, en el calendario, tocas un día para ir a sus hojas. Las flechas de abajo pasan de hoja y de día; el índice está en las tres rayas."],
+   ["Cada día tiene tres hojas","Hoja 1: tu día (prioridades, horario y contenido). Hoja 2: tu espacio (ellos, gratitud y cómo te sientes). Hoja 3: notas libres para lo que quieras."],
+   ["Escribe a tu manera","Toca una línea y escribe. En el botón Aa eliges tu tipo de letra, su tamaño, el color de la tinta y el color de toda la agenda."],
+   ["Decórala con stickers","Toca la carita y elige entre 151 stickers. Arrástralos con el dedo y, con dos dedos, agrándalos, achícalos o gíralos."],
+   ["Guarda tu progreso","Todo se guarda solo en tu dispositivo. De vez en cuando, en Aa › Color y ajustes, pulsa «Descargar copia de mi agenda» para no perder nada si cambias de móvil."]];
+  return {title:"Cómo usar tu agenda",single:true,pages:[page("howto",`<div class="eyebrow">Hoy También Cuenta · ${YEAR}</div><h1 class="ix-t">Cómo usar tu agenda</h1><div class="ix-sub">Cinco minutos para dejarla lista. Después, solo disfrútala.</div>
+   <ol class="how">${S.map(([a,b],i)=>`<li><i>${i+1}</i><div><b>${a}</b><p>${b}</p></div></li>`).join("")}</ol>
+   <div class="how-note"><b>¿Prefieres escribir a mano?</b><p>Tu compra incluye también la agenda en PDF para GoodNotes, Xodo o para imprimir.</p></div>`,{cls:"ixpage"})]};
+}
 function vOpen(m){
   return {title:MONTHS[m],single:true,pages:[page("open-"+m,`<span class="op-year">${YEAR}</span>
-    <div><div class="op-month" style="--len:${MONTHS[m].length};font-size:${Math.min(104,Math.floor(900/MONTHS[m].length))}px">${MONTHS[m]}</div><div class="op-theme">${esc(theme(m))}</div><div class="op-phrase">${esc(MONTH_PHRASE[m])}</div></div>`,{cls:"opener",clip:`<div class="ov"></div>`,bg:m+"f"})]};
+    <div><div class="op-month" style="--len:${MONTHS[m].length};font-size:${Math.min(104,Math.floor(900/MONTHS[m].length))}px">${MONTHS[m]}</div><div class="op-theme">${esc(theme(m))}</div><div class="op-phrase">${esc(MONTH_PHRASE[m])}</div><button class="op-go" data-go='{"v":"month","m":${m}}'>Ver mi mes ›</button></div>`,{cls:"opener",clip:`<div class="ov"></div>`,bg:m+"f"})]};
 }
 function vMonth(m){
   const k="m-"+m,first=(new Date(YEAR,m,1).getDay()+6)%7,t=new Date();
@@ -633,12 +689,12 @@ function vBack(){
 function curMonth(){return VIEW.m!=null?VIEW.m:-1;}
 function render(){
   const v=VIEW;let o;
-  if(v.v==="cover")o=vCover();else if(v.v==="letter")o=vLetter();else if(v.v==="vision")o=vVision();else if(v.v==="open")o=vOpen(v.m);else if(v.v==="month")o=vMonth(v.m);else if(v.v==="notes")o=vNotes(v.m,v.d);else if(v.v==="closing")o=vClosing();else if(v.v==="back")o=vBack();else o=vDay(v.m,v.d);
+  if(v.v==="cover")o=vCover();else if(v.v==="index")o=vIndex();else if(v.v==="howto")o=vHowto();else if(v.v==="letter")o=vLetter();else if(v.v==="vision")o=vVision();else if(v.v==="open")o=vOpen(v.m);else if(v.v==="month")o=vMonth(v.m);else if(v.v==="notes")o=vNotes(v.m,v.d);else if(v.v==="closing")o=vClosing();else if(v.v==="back")o=vBack();else o=vDay(v.m,v.d);
   const tabs=`<div class="mtabs">${MONTHS.map((mm,i)=>`<button class="${curMonth()===i?"on":""}" data-go='{"v":"open","m":${i}}'>${mm.slice(0,3).toUpperCase()}</button>`).join("")}</div>`;
   lastPages=o.pages?o.pages.length:1;
   let pages=o.pages,single=o.single,sw="";
   if(pages&&pages.length>1&&effSingle()){const s=curS();sw=`<div class="sheetsw">${pages.map((_,i)=>`<button class="${i===s?"on":""}" data-sheet="${i}">Hoja ${i+1}</button>`).join("")}</div>`;pages=[pages[s]];single=true;}
-  $("#stage").innerHTML=`${o.raw?"":sw}<div class="zoomer" id="zoomer">${o.raw?o.html:`<div class="book ${single?"single":"two"}">${pages.join("")}</div>${single?"":tabs}`}</div>`;
+  $("#stage").innerHTML=`${o.raw?"":sw}<div class="zoomer" id="zoomer">${o.raw?o.html:`<div class="book ${single?"single":"two"}">${pages.join("")}</div>${single&&!isMob()?"":tabs}`}</div>`;
   $("#brandTitle").textContent=o.title;
   const prev=step(-1),next=step(1),i=SEQI[vk(v)]||0;
   let mid=v.m!=null?`<button class="mid" data-go='{"v":"month","m":${v.m}}'>${MONTHS[v.m]}</button>`:`<button class="mid" id="bIdx">Índice</button>`;
@@ -646,7 +702,7 @@ function render(){
   const bi=$("#bIdx");if(bi)bi.onclick=openMenu;
   document.body.classList.toggle("mobui",isMob());
   if(isMob()){const I=p=>`<svg viewBox="0 0 24 24">${p}</svg>`,np=lastPages>1&&effSingle()?lastPages:1,cs=curS();
-    const SH={"Tablero de visión":"Mi visión","Una carta para ti":"Carta","Para cerrar el año":"Cierre"},short=SH[o.title]||(o.title.length>16?o.title.replace(/^Notas · /,"Notas ").slice(0,16):o.title);
+    const SH={"Cómo usar tu agenda":"Cómo usarla","Tablero de visión":"Mi visión","Una carta para ti":"Carta","Para cerrar el año":"Cierre"},short=SH[o.title]||(o.title.length>16?o.title.replace(/^Notas · /,"Notas ").slice(0,16):o.title);
     $("#mbar").innerHTML=`<button id="mbMenu" aria-label="Índice">${I('<path d="M4 7h16M4 12h16M4 17h10"/>')}</button>
      <button class="arr" aria-label="Anterior" ${i>0||cs>0?`data-go='${JSON.stringify(prev)}'`:"disabled"}>${I('<path d="M15 5l-7 7 7 7"/>')}</button>
      <button class="mid" ${v.m!=null?`data-go='{"v":"month","m":${v.m}}'`:'id="mbIdx"'}><span>${esc(short)}</span>${np>1?`<span class="dots">${Array.from({length:np},(_,k)=>`<i class="${k===cs?"on":""}"></i>`).join("")}</span>`:""}</button>
@@ -666,7 +722,7 @@ function applyZoom(){
   const mob=mui&&!!z.querySelector(".book.single .page, .coverwrap");
   document.body.classList.toggle("mob",mob);document.body.classList.toggle("fitmode",!mob&&s0.view==="fit");
   if(mob){
-    const R=document.documentElement.style,avW=st.clientWidth-16,top=z.getBoundingClientRect().top,mb=$("#mbar").getBoundingClientRect(),avH=Math.floor(mb.top-top-10);
+    const R=document.documentElement.style,avW=st.clientWidth,top=z.getBoundingClientRect().top,mb=$("#mbar").getBoundingClientRect(),avH=Math.floor(mb.top-top);
     const fixed=z.querySelector(".coverwrap, .page.opener");let s=fixed?Math.min(1,avW/470):MOBS[s0.mobsize||"m"];
     for(let k=0;k<16;k++){R.setProperty("--mw",Math.floor(avW/s)+"px");R.setProperty("--mh",Math.floor(avH/s)+"px");if(z.offsetHeight*s<=avH+1||s<=.56)break;s=Math.max(.56,s-.03);}
     z.style.transform=`translateX(-50%) scale(${s})`;st.style.height=avH+"px";ZS=s;return;}
@@ -783,6 +839,8 @@ function openMenu(){
   const tv=todayView();
   openSheet("Índice",`<div class="menu-list">
    <button data-go='{"v":"cover"}'>Portada <span>Tu nombre</span></button>
+   <button data-go='{"v":"index"}'>Índice de la agenda <span>Secciones y meses</span></button>
+   <button data-go='{"v":"howto"}'>Cómo usar tu agenda <span>Paso a paso</span></button>
    <button data-go='{"v":"letter"}'>Una carta para ti <span>Empieza aquí</span></button>
    <button data-go='{"v":"vision"}'>Tablero de visión <span>Tu 2027</span></button>
    ${tv?`<button data-go='${JSON.stringify(tv)}'>Hoy <span>Ir directamente</span></button>`:""}
