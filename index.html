@@ -110,6 +110,17 @@ body.mobui .mbar{display:flex;position:fixed;z-index:70;left:12px;right:12px;bot
 body.mobui .toast{bottom:calc(90px + env(safe-area-inset-bottom))}
 body.pinching .stk-layer,body.pinching .page{touch-action:none}
 
+/* contraseña y recordatorio */
+#lock{position:fixed;inset:0;z-index:9998;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 30% 20%,var(--b-soft),var(--b-tint) 70%)}
+.lk-card{box-sizing:border-box;width:100%;max-width:380px;background:var(--paper);border-radius:28px;padding:32px 24px;text-align:center;box-shadow:0 20px 50px rgba(107,67,80,.18)}
+.lk-k{letter-spacing:.22em;text-transform:uppercase;font-size:11px;color:var(--b-deep);font-weight:700}
+.lk-card h2{font-family:'Playfair Display';font-weight:400;font-size:30px;color:var(--b-ink);margin:8px 0}
+.lk-card form{display:flex;gap:8px;margin-top:12px}.lk-card input{flex:1;min-width:0;font-size:17px;padding:12px 14px;border:1.5px solid var(--b);border-radius:14px}
+.lk-card form button{border:0;border-radius:14px;padding:0 18px;background:var(--b-ink);color:#fff;font-weight:700}
+.lk-e{color:#B4475E;font-size:14px}.lk-f{border:0;background:none;color:var(--b-deep);text-decoration:underline;margin-top:14px;font-size:13.5px}
+.pwf{display:flex;flex-direction:column;gap:12px;margin-top:10px}.pwf label{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:700;color:var(--b-deep)}
+.pwf input,.pwf select{font-size:16px;padding:11px 12px;border:1.5px solid var(--b-tint);border-radius:12px;background:#fff;color:var(--text);font-family:inherit}
+.rm-row{display:flex;gap:10px}.rm-row label{flex:1}.pwf .pill{justify-content:center}
 /* índice y cómo usar */
 .ix-t{font-family:'Playfair Display';font-weight:400;font-size:54px;line-height:1.05;margin:10px 0 4px;color:var(--b-ink)}
 .ix-sub{color:var(--muted);font-size:15px;margin-bottom:18px}
@@ -257,7 +268,7 @@ body.fitmode .pnav{margin-top:10px}
 .zrow{display:flex;align-items:center;gap:10px}
 .zrow b{min-width:56px;text-align:center;font-size:15px}
 @media (max-width:420px){.top .ib{width:38px}}
-.cbtn{display:flex;justify-content:center;margin-top:34px}
+.cbtn{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:34px}
 
 /* ---------- carta ---------- */
 .letter-art{position:relative;display:grid;place-items:center;padding:10px 0 0}
@@ -299,6 +310,8 @@ body.fitmode .pnav{margin-top:10px}
 .dayhead .num{font-family:'Playfair Display';font-size:72px;line-height:.85;color:var(--b-ink)}
 .dayhead .wday{font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--b-deep)}
 .dayhead .mon{font-family:'Playfair Display';font-size:22px;color:var(--text)}
+.dbtns{margin-left:auto;align-self:flex-start;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.dbtns .notesbtn{margin:0}
 .notesbtn{margin-left:auto;align-self:flex-start;border:1.5px solid var(--b-tint);background:rgba(255,255,255,.85);border-radius:999px;padding:7px 12px;font-size:13px;font-weight:700;color:var(--b-ink);white-space:nowrap}
 .tag{display:inline-block;margin-top:5px;background:var(--b-tint);color:var(--b-ink);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:700}
 .minihead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:6px}
@@ -539,7 +552,8 @@ function phrase(m,d){return DATA[MONTHS[m]].frases[d-1];}
 function theme(m){return DATA[MONTHS[m]].tema;}
 
 let VIEW={v:"cover"};
-function go(v){VIEW=v;DB.last=v;save();render();window.scrollTo(0,0);}
+let RESUME=null;
+function go(v){VIEW=v;DB.last=v;if(v.v!=="cover")RESUME=null;save();render();window.scrollTo(0,0);}
 
 /* ---------- piezas ---------- */
 const lined=(k,f,rows,ph)=>`<textarea class="lined" style="height:calc(${rows} * var(--lh))" rows="${rows}" data-k="${k}" data-f="${f}" placeholder="${esc(ph||"")}">${esc(P(k)[f]||"")}</textarea>`;
@@ -560,7 +574,7 @@ function vCover(){
      <div class="c-art"><div class="halo"></div>${hearts(4)}<img class="sway" src="${COVER_IMG}" alt=""></div>
      <div class="c-label"><label>Esta agenda es de</label><input type="text" data-k="cover" data-f="owner" value="${esc(p.owner||"")}" placeholder="Escribe tu nombre"></div>
    </div><div class="stk-layer" data-pk="cover"></div></section>
-   <div class="cbtn"><button class="pill" data-go='{"v":"index"}'>Abrir mi agenda →</button></div></div>`,single:true,raw:true};
+   <div class="cbtn"><button class="pill" data-go='{"v":"index"}'>Abrir mi agenda →</button>${RESUME?`<button class="pill ghost" data-go='${JSON.stringify(RESUME)}'>Seguir donde lo dejé</button>`:""}</div></div>`,single:true,raw:true};
 }
 function vLetter(){
   const tv=todayView();
@@ -613,6 +627,7 @@ function vHowto(){
    ["Cada día tiene tres hojas","Hoja 1: tu día (prioridades, horario y contenido). Hoja 2: tu espacio (ellos, gratitud y cómo te sientes). Hoja 3: notas libres para lo que quieras."],
    ["Escribe a tu manera","Toca una línea y escribe. En el botón Aa eliges tu tipo de letra, su tamaño, el color de la tinta y el color de toda la agenda."],
    ["Decórala con stickers","Toca la carita y elige entre 151 stickers. Arrástralos con el dedo y, con dos dedos, agrándalos, achícalos o gíralos."],
+   ["Avisos y contraseña","En cada día, «⏰ Aviso» crea un recordatorio con alarma en el calendario de tu móvil. En Aa › Color y ajustes › Contraseña puedes proteger tu agenda."],
    ["Guarda tu progreso","Todo se guarda solo en tu dispositivo. De vez en cuando, en Aa › Color y ajustes, pulsa «Descargar copia de mi agenda» para no perder nada si cambias de móvil."]];
   return {title:"Cómo usar tu agenda",single:true,pages:[page("howto",`<div class="eyebrow">Hoy También Cuenta · ${YEAR}</div><h1 class="ix-t">Cómo usar tu agenda</h1><div class="ix-sub">Cinco minutos para dejarla lista. Después, solo disfrútala.</div>
    <ol class="how">${S.map(([a,b],i)=>`<li><i>${i+1}</i><div><b>${a}</b><p>${b}</p></div></li>`).join("")}</ol>
@@ -642,7 +657,7 @@ function vDay(m,d){
   const base="d-"+(m+1)+"-"+d,ka=base+"a",kb=base+"b",dt=new Date(YEAR,m,d),sp=SPECIAL[(m+1)+"-"+d],wd=WD[dt.getDay()],pa=P(ka),pb=P(kb);
   const pr=[0,1,2].map(i=>`<div class="prio"><input class="ck" type="checkbox" data-k="${ka}" data-f="c${i}" ${pa["c"+i]?"checked":""} aria-label="Hecho">${wline(ka,"p"+i)}</div>`).join("");
   const a=page(ka,`<div class="dayhead"><div class="num">${d}</div><div><div class="wday">${wd}</div><div class="mon">de ${MONTHS[m].toLowerCase()} de ${YEAR}</div>${sp?`<span class="tag">★ ${esc(sp)}</span>`:""}</div>
-   <button class="notesbtn" data-go='{"v":"notes","m":${m},"d":${d}}'>📝 Notas libres</button></div>
+   <div class="dbtns"><button class="notesbtn" data-go='{"v":"notes","m":${m},"d":${d}}'>📝 Notas libres</button><button class="notesbtn" data-rem="${m}|${d}">⏰ Aviso</button></div></div>
    <div class="quote"><small>Frase del día</small>${esc(phrase(m,d))}</div>
    ${sec("Mis 3 prioridades",pr)}
    ${sec("Mi horario",`<div class="sched"><div class="lb">Mañana</div>${lined(ka,"am",2)}<div class="lb">Tarde</div>${lined(ka,"pm",2)}<div class="lb">Noche</div>${lined(ka,"nt",1)}</div>`)}
@@ -742,6 +757,7 @@ function fit(t){}
 
 /* ---------- eventos ---------- */
 document.addEventListener("click",e=>{
+  const rm=e.target.closest("[data-rem]");if(rm){const [a,b]=rm.dataset.rem.split("|").map(Number);remPanel(a,b);return;}
   const g=e.target.closest("[data-go]");if(g){go(JSON.parse(g.getAttribute("data-go")));closeSheet();return;}
   const sh=e.target.closest("[data-sheet]");if(sh){go(Object.assign({},VIEW,{s:+sh.dataset.sheet}));return;}
   const tg=e.target.closest("[data-tg]");if(tg){const [k,f,i]=tg.dataset.tg.split("|"),p=P(k),a=p[f]||(p[f]=[]),n=+i,j=a.indexOf(n);j<0?a.push(n):a.splice(j,1);tg.classList.toggle("on");save();return;}
@@ -889,6 +905,7 @@ function setPanel(){
    <button data-act="export">Descargar copia de mi agenda <span>Archivo .json</span></button>
    <button data-act="import">Cargar una copia <span>Recuperar o pasar a otro dispositivo</span></button>
    <button data-act="print">Imprimir estas hojas <span>O guardarlas en PDF</span></button>
+   <button data-act="pass">Contraseña <span>${getPass()?"Cambiar o quitar":"Proteger mi agenda"}</span></button>
    <button data-act="reset">Empezar de cero <span>Borra todo lo escrito</span></button></div>
   <div class="hint" style="margin-top:18px">Hoy También Cuenta · creada con cariño por Marga · @margabamedigital<br>Uso personal. No está permitido compartir ni revender este archivo.</div>`);
   const cp=$("#cPick");if(cp)cp.addEventListener("input",e=>{DB.settings.color=e.target.value;applySettings();save();document.querySelectorAll(".sw").forEach(x=>x.classList.toggle("on",x.classList.contains("custom")));});
@@ -930,6 +947,8 @@ function act(a){
   if(a==="export"){const blob=new Blob([JSON.stringify({app:"hoytambiencuenta",key:KEY,saved:new Date().toISOString(),data:DB})],{type:"application/json"});
     const u=URL.createObjectURL(blob),l=document.createElement("a");l.href=u;l.download="Mi_agenda_HoyTambienCuenta_"+new Date().toISOString().slice(0,10)+".json";document.body.appendChild(l);l.click();setTimeout(()=>{URL.revokeObjectURL(u);l.remove();},500);toast("Copia descargada");}
   if(a==="import")$("#fileIn").click();
+  if(a==="pass")passPanel();
+  if(a==="nopass"&&confirm("¿Quitar la contraseña? La agenda se abrirá sin pedirla.")){setPass(null);closeSheet();toast("Contraseña quitada");}
   if(a==="print"){closeSheet();setTimeout(()=>window.print(),300);}
   if(a==="reset"&&confirm("¿Seguro que quieres borrar todo lo que has escrito? Si no tienes una copia, no se podrá recuperar.")){DB.pages={};save();closeSheet();go({v:"cover"});toast("Agenda en blanco");}
 }
@@ -937,13 +956,58 @@ $("#fileIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new Fil
   if(!confirm("Se sustituirá lo que hay ahora en esta agenda por la copia. ¿Continuar?"))return;DB.pages=d.pages;Object.assign(DB.settings,d.settings||{});save();applySettings();closeSheet();render();toast("Copia cargada");}
   catch(err){toast("Ese archivo no es una copia de esta agenda");}};r.readAsText(f);e.target.value="";};
 
-window.addEventListener("pagehide",()=>save(true));document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")save(true);});
+window.addEventListener("pagehide",()=>save(true));let hiddenAt=0;document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){save(true);hiddenAt=Date.now();}
+  else if(hiddenAt&&Date.now()-hiddenAt>10*60*1000){RESUME=(VIEW.v!=="cover")?VIEW:RESUME;closeSheet();VIEW={v:"cover"};render();lockIfNeeded();}});
 window.__HTC={go,SEQ};
+/* ---------- contraseña personal ---------- */
+const PKEY="htc-pass",BUYH=["1fnl8yj"];
+function hsh(s){let x=2166136261;for(let i=0;i<s.length;i++){x^=s.charCodeAt(i);x=Math.imul(x,16777619)>>>0;}return x.toString(36);}
+const pwh=v=>hsh("pw|"+String(v||"").trim());
+function getPass(){try{return localStorage.getItem(PKEY);}catch(e){return null;}}
+function setPass(h){try{h?localStorage.setItem(PKEY,h):localStorage.removeItem(PKEY);return true;}catch(e){return false;}}
+function lockIfNeeded(){const h=getPass();if(!h||$("#lock"))return;const d=document.createElement("div");d.id="lock";
+  d.innerHTML=`<div class="lk-card"><div class="lk-k">Agenda 2027</div><h2>Hoy también cuenta</h2><p>Escribe tu contraseña para abrir tu agenda.</p>
+   <form id="lkF" autocomplete="off"><input id="lkI" type="password" placeholder="Tu contraseña" aria-label="Contraseña"><button>Entrar</button></form>
+   <p class="lk-e" id="lkE" hidden>Contraseña incorrecta.</p><button class="lk-f" id="lkForgot">¿La olvidaste?</button></div>`;
+  document.body.appendChild(d);setTimeout(()=>{const i=$("#lkI");i&&i.focus();},300);
+  $("#lkF").onsubmit=e=>{e.preventDefault();if(pwh($("#lkI").value)===getPass())d.remove();else{$("#lkE").hidden=false;$("#lkI").value="";}};
+  $("#lkForgot").onclick=()=>{const c=prompt("Para quitar la contraseña, escribe el código de acceso que recibiste con tu compra. Lo que has escrito no se borra.");
+    if(c!=null&&BUYH.includes(hsh("htc|"+c.toUpperCase().replace(/[^A-Z0-9]/g,"")))){setPass(null);d.remove();toast("Contraseña quitada. Puedes crear otra en Ajustes.");}else if(c!=null)toast("Ese código no es correcto");};}
+function passPanel(){const has=!!getPass();
+  openSheet("Contraseña",`<div class="hint">${has?"Tu agenda tiene contraseña: se pide cada vez que abres la app.":"Ponle una contraseña a tu agenda para que nadie más pueda leerla en tu móvil. Se pedirá cada vez que la abras."}</div>
+  <form id="pwF" class="pwf" autocomplete="off">${has?`<label>Contraseña actual<input type="password" id="pw0"></label>`:""}
+   <label>${has?"Nueva contraseña":"Contraseña"}<input type="password" id="pw1" minlength="4"></label><label>Repítela<input type="password" id="pw2"></label>
+   <button class="pill" type="submit">${has?"Cambiar contraseña":"Guardar contraseña"}</button></form>
+  ${has?`<div class="menu-list" style="margin-top:14px"><button data-act="nopass">Quitar la contraseña <span>Se abrirá sin pedirla</span></button></div>`:""}
+  <div class="hint" style="margin-top:14px">Si la olvidas, podrás quitarla con el código de acceso de tu compra. Lo que has escrito nunca se borra.</div>`);
+  $("#pwF").onsubmit=e=>{e.preventDefault();if(has&&pwh($("#pw0").value)!==getPass())return toast("La contraseña actual no es correcta");
+    const a=$("#pw1").value.trim(),b=$("#pw2").value.trim();if(a.length<4)return toast("Usa al menos 4 caracteres");if(a!==b)return toast("Las dos contraseñas no coinciden");
+    setPass(pwh(a));closeSheet();toast(has?"Contraseña cambiada":"Contraseña guardada");};}
+/* ---------- recordatorios en el calendario ---------- */
+function remPanel(m,d){const pa=P("d-"+(m+1)+"-"+d+"a"),def=pa.p0||pa.p1||pa.p2||"";
+  openSheet("Recordatorio",`<div class="hint">Crea un aviso en el calendario de tu móvil para el <b>${d} de ${MONTHS[m].toLowerCase()} de ${YEAR}</b>. Te sonará la alarma aunque la agenda esté cerrada.</div>
+  <form id="rmF" class="pwf" autocomplete="off"><label>¿Qué te recuerdo?<input id="rmT" type="text" value="${esc(def)}" placeholder="Grabar el reel, cita del pediatra…"></label>
+   <div class="rm-row"><label>Hora<input id="rmH" type="time" value="09:00"></label><label>Avisarme<select id="rmA"><option value="0">A la hora</option><option value="10" selected>10 min antes</option><option value="30">30 min antes</option><option value="60">1 hora antes</option><option value="1440">1 día antes</option></select></label></div>
+   <button class="pill" type="submit">📱 Añadir al calendario del móvil</button>
+   <button class="pill ghost" type="button" id="rmG">Abrir en Google Calendar</button></form>
+  <div class="hint" style="margin-top:12px">iPhone: se abre el calendario y tocas «Añadir». Android: abre el archivo con tu app de calendario o usa Google Calendar (allí el aviso es el que tengas por defecto).</div>`);
+  const val=()=>{const [hh,mm]=($("#rmH").value||"09:00").split(":").map(Number),st=new Date(YEAR,m,d,hh,mm),en=new Date(st.getTime()+30*60000);
+    const f=x=>x.getFullYear()+String(x.getMonth()+1).padStart(2,"0")+String(x.getDate()).padStart(2,"0")+"T"+String(x.getHours()).padStart(2,"0")+String(x.getMinutes()).padStart(2,"0")+"00";
+    return {t:($("#rmT").value||"Mi agenda").trim(),s:f(st),e:f(en),a:+$("#rmA").value};};
+  $("#rmF").onsubmit=e=>{e.preventDefault();const v=val(),x=s=>s.replace(/([\\,;])/g,"\\$1");
+    const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Hoy Tambien Cuenta//ES","CALSCALE:GREGORIAN","BEGIN:VEVENT","UID:"+Date.now()+"@hoytambiencuenta","DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z",
+     "DTSTART:"+v.s,"DTEND:"+v.e,"SUMMARY:"+x(v.t),"DESCRIPTION:"+x("Hoy También Cuenta · tu agenda 2027"),"BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+x(v.t),"TRIGGER:-PT"+v.a+"M","END:VALARM","END:VEVENT","END:VCALENDAR"].join("\r\n");
+    if(/iPhone|iPad|iPod/.test(navigator.userAgent)){location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);}
+    else{const u=URL.createObjectURL(new Blob([ics],{type:"text/calendar"})),l=document.createElement("a");l.href=u;l.download="Recordatorio_"+v.s.slice(0,8)+".ics";document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);}
+    toast("Ábrelo y pulsa «Añadir» en tu calendario");};
+  $("#rmG").onclick=()=>{const v=val();window.open("https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(v.t)+"&dates="+v.s+"/"+v.e+"&details="+encodeURIComponent("Hoy También Cuenta · tu agenda 2027"),"_blank");};}
 /* ---------- inicio ---------- */
+RESUME=(DB.last&&SEQI[vk(DB.last)]!=null&&!["cover","index","howto"].includes(DB.last.v))?DB.last:null;
 applySettings();
 const tv=todayView();
-VIEW=(tv&&DB.last)?tv:(DB.last&&SEQI[vk(DB.last)]!=null?DB.last:{v:"cover"});
+VIEW={v:"cover"};
 render();
+lockIfNeeded();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{document.querySelectorAll("textarea.lined").forEach(fit);applyZoom();});
 })();
 </script>
